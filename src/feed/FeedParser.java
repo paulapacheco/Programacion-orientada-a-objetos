@@ -1,7 +1,7 @@
 package feed;
 
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.IOException;  // eliminar
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
@@ -9,10 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -20,10 +16,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import utils.FeedsData;
 
 public class FeedParser {
 
-    // Este método ya está implementado y probado con un unit test, no es necesario modificarlo
+    // Este método ya está implementado y probado con un unit test
     // Este método es el que se encarga de parsear el contenido de un XML y devolver una lista de artículos
     public static List<Article> parseXML(String xmlData) {
 
@@ -69,40 +66,44 @@ public class FeedParser {
         return articles;
     }
 
-    // Este método ya está implementado y probado con un unit test, no es necesario modificarlo
+    // Este método ya está implementado y probado con un unit test
     // Este método es el que se encarga de leer el archivo feeds.json y parsear cada feed
-    public static List<Article> parseXMLFromURL() throws MalformedURLException, IOException, Exception {
-        // Lee el archivo feeds.json
-        String feedContent = new String(Files.readAllBytes(Paths.get("src/data/feeds.json")));
-
-        // Convierte el contenido del archivo a un objeto JSONArray
-        JSONArray feeds = new JSONArray(feedContent);
+    public static List<Article> getArticlesFromFeeds(List<FeedsData> feedsDataList, String feedKey) throws MalformedURLException, IOException, Exception {
 
         List<Article> allArticles = new ArrayList<>();
 
-        // Itera sobre cada objeto en el JSONArray
-        for (int i = 0; i < feeds.length(); i++) {
-            // Obtiene el objeto JSONObject actual
-            JSONObject feed = feeds.getJSONObject(i);
-
-            // Obtiene la URL del feed
-            String urlFromFeed = feed.getString("url");
-
-            // Obtiene el contenido de la url del feed en formato XML como un String
-            String xmlData = fetchFeed(urlFromFeed);
-
-            // Parseamos el contenido de la url
-            List<Article> articles = parseXML(xmlData);
-
-            // Aquí podemos hacer algo con los artículos, como imprimirlos
-            for (Article article : articles) {
-                article.printArticle();
+        // Si se seleccionó un feed específico, se obtienen los artículos de ese feed
+        // Si no, se obtienen los artículos de todos los feeds
+        if (feedKey != null) {
+            for (FeedsData feedData : feedsDataList) {
+                if (feedData.getLabel().equals(feedKey)) {
+                    // Obtiene la lista de artículos del feed seleccionado
+                    List<Article> articles = getArticles(feedData.getUrl());
+                    allArticles.addAll(articles);
+                    break;
+                }
             }
-
-            // Agrega los artículos a la lista de todos los artículos
-            allArticles.addAll(articles);
+        } else {
+            for (FeedsData feedData : feedsDataList) {
+                // Obtiene la lista de artículos de cada feed
+                List<Article> articles = getArticles(feedData.getUrl());
+                allArticles.addAll(articles);
+            }
         }
         return allArticles;
+    }
+
+    // Este método devuelve una lista de artículos a partir de una URL
+    public static List<Article> getArticles(String url) throws MalformedURLException, IOException, Exception {
+        // Hace la solicitud HTTP al feed y devuelve el XML como un String
+        String xmlData = fetchFeed(url);
+        // Parsea el XML y devuelve una lista de artículos
+        List<Article> articles = parseXML(xmlData);
+        // Imprime los artículos
+        for (Article article : articles) {
+            article.printArticle();
+        }
+        return articles;
     }
 
     // Este método ya vino implementada
