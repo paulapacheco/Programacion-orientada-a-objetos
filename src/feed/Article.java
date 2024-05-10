@@ -1,6 +1,6 @@
 package feed;
 
-public class Article {
+public class Article implements java.io.Serializable {
     private String title;
     private String description;
     private String link;
