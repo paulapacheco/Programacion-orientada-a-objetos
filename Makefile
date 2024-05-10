@@ -19,6 +19,6 @@ run: bin/$(MAIN_CLASS).class
 	@$(JAVA) -cp $(LIBS):bin $(MAIN_CLASS) $(ARGS)
 
 clean:
-	rm -rf $(OUTPUT_DIR)/*.class
+	rm -rf $(OUTPUT_DIR)/* articles.ser
 
 .PHONY: all run clean
