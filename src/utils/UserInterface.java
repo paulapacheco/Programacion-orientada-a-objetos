@@ -26,7 +26,8 @@ public class UserInterface {
         for (int i = 0; i < args.length; i++) {
             for (Option option : options) {
                 if (option.getName().equals(args[i]) || option.getLongName().equals(args[i])) {
-                    if (option.getName().equals("h") || option.getLongName().equals("--help")) {
+                    // Check if the option is -h or --help to print the help message
+                    if (option.getName().equals("-h") || option.getLongName().equals("--help")) {
                         printHelp(feedsDataArray);
                         System.exit(0);
                     }
@@ -46,10 +47,12 @@ public class UserInterface {
         }
         boolean printFeed = optionDict.containsKey("-pf");
         boolean computeNamedEntities = optionDict.containsKey("-ne");
-        // TODO: use value for heuristic config
-
         String feedKey = optionDict.get("-f");
+        // TODO: use value for heuristic config and stats format
+        //String heuristicConfig = optionDict.get("-ne");
+        //boolean statsFormat = optionDict.containsKey("-sf");
 
+        // TODO: Add heuristicConfig and statsFormat to the constructor
         return new Config(printFeed, computeNamedEntities, feedKey);
     }
 

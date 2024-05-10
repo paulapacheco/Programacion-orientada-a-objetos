@@ -50,13 +50,17 @@ public class FeedParser {
                     Node linkNode = element.getElementsByTagName("link").item(0);
                     Node pubDateNode = element.getElementsByTagName("pubDate").item(0);
 
-                    String title = titleNode != null ? titleNode.getTextContent() : "";
-                    String description = descriptionNode != null ? descriptionNode.getTextContent() : "";
-                    String link = linkNode != null ? linkNode.getTextContent() : "";
-                    String pubDate = pubDateNode != null ? pubDateNode.getTextContent() : "";
+                    if (titleNode == null || descriptionNode == null || linkNode == null || pubDateNode == null) {
+                        continue;
+                    } else {
+                        String title = titleNode.getTextContent();
+                        String description = descriptionNode.getTextContent();
+                        String link = linkNode.getTextContent();
+                        String pubDate = pubDateNode.getTextContent();
 
-                    // Crea un nuevo artículo y lo añade a la lista de artículos
-                    articles.add(new Article(title, description, link, pubDate));
+                        // Crea un nuevo artículo y lo añade a la lista de artículos
+                        articles.add(new Article(title, description, link, pubDate));
+                    }
                 }
             }
         } catch (Exception e) {
@@ -82,7 +86,6 @@ public class FeedParser {
                     // Obtiene la lista de artículos del feed seleccionado
                     List<Article> articles = getArticles(feedData.getUrl());
                     allArticles.addAll(articles);
-                    System.out.println("Se han cargado " + articles.size() + " artículos del feed " + feedKey);
                     break;
                 }
             }
@@ -96,7 +99,6 @@ public class FeedParser {
                 List<Article> articles = getArticles(feedData.getUrl());
                 allArticles.addAll(articles);
             }
-            System.out.println("Se han cargado " + allArticles.size() + " artículos de todos los feeds");
         }
         return allArticles;
     }
