@@ -1,8 +1,10 @@
+import java.io.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import feed.Article;
+import feed.FeedParser;
 import utils.Config;
 import utils.FeedsData;
 import utils.JSONParser;
@@ -10,10 +12,11 @@ import utils.UserInterface;
 
 public class App {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         List<FeedsData> feedsDataArray = new ArrayList<>();
         try {
+            // Lista de objetos FeedsData, que contienen la información de los feeds
             feedsDataArray = JSONParser.parseJsonFeedsData("src/data/feeds.json");
         } catch (IOException e) {
             e.printStackTrace();
@@ -21,26 +24,38 @@ public class App {
         }
 
         UserInterface ui = new UserInterface();
-        Config config = ui.handleInput(args);
+        Config config = ui.handleInput(feedsDataArray, args);
 
-        run(config, feedsDataArray);
+        List<Article> Allarticles;
+        if (config.getPrintFeed()) {
+            Allarticles = loadArticles();
+            if (Allarticles == null) {
+                System.out.println("No articles found");
+                System.exit(1);
+            } else {
+                System.out.println("Printing feed(s): ");
+                for (Article article : Allarticles) {
+                    article.printArticle();
+                }
+                System.out.println(Allarticles.size() + " articles printed");
+            }
+        } else if (config.getComputeNamedEntities()) {
+            // TODO: Compute named entities
+        } else {
+            Allarticles = run(config, feedsDataArray);
+            saveArticles(Allarticles);
+        }
     }
 
     // TODO: Change the signature of this function if needed
-    private static void run(Config config, List<FeedsData> feedsDataArray) {
+    private static List<Article> run(Config config, List<FeedsData> feedsDataArray) throws Exception {
 
-        if (feedsDataArray == null || feedsDataArray.size() == 0) {
+        if (feedsDataArray == null || feedsDataArray.isEmpty()) {
             System.out.println("No feeds data found");
-            return;
+            return null;
         }
 
-        List<Article> allArticles = new ArrayList<>();
-        // TODO: Populate allArticles with articles from corresponding feeds
-
-        if (config.getPrintFeed()) {
-            System.out.println("Printing feed(s) ");
-            // TODO: Print the fetched feed
-        }
+        List<Article> allArticles = FeedParser.getArticlesFromFeeds(feedsDataArray, config.getFeedKey());
 
         if (config.getComputeNamedEntities()) {
             // TODO: complete the message with the selected heuristic name
@@ -52,29 +67,47 @@ public class App {
             System.out.println("\nStats: ");
             System.out.println("-".repeat(80));
         }
+        return allArticles;
     }
 
-    // TODO: Maybe relocate this function where it makes more sense
-    private static void printHelp(List<FeedsData> feedsDataArray) {
-        System.out.println("Usage: make run ARGS=\"[OPTION]\"");
-        System.out.println("Options:");
-        System.out.println("  -h, --help: Show this help message and exit");
-        System.out.println("  -f, --feed <feedKey>:                Fetch and process the feed with");
-        System.out.println("                                       the specified key");
-        System.out.println("                                       Available feed keys are: ");
-        for (FeedsData feedData : feedsDataArray) {
-            System.out.println("                                       " + feedData.getLabel());
+    private static void saveArticles(List<Article> articles) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream("articles.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(articles);
+            out.close();
+            fileOut.close();
+        } catch (IOException i) {
+            i.printStackTrace();
         }
-        System.out.println("  -ne, --named-entity <heuristicName>: Use the specified heuristic to extract");
-        System.out.println("                                       named entities");
-        System.out.println("                                       Available heuristic names are: ");
-        // TODO: Print the available heuristics with the following format
-        System.out.println("                                       <name>: <description>");
-        System.out.println("  -pf, --print-feed:                   Print the fetched feed");
-        System.out.println("  -sf, --stats-format <format>:        Print the stats in the specified format");
-        System.out.println("                                       Available formats are: ");
-        System.out.println("                                       cat: Category-wise stats");
-        System.out.println("                                       topic: Topic-wise stats");
     }
 
+    @SuppressWarnings("unchecked")
+    private static List<Article> loadArticles() {
+        List<Article> articles = null;
+        try {
+            try {
+                File file = new File("articles.ser");
+                if (!file.exists()) {
+                    return null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+            FileInputStream fileIn = new FileInputStream("articles.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            articles = (List<Article>) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException c) {
+            System.out.println("Article class not found");
+            c.printStackTrace();
+            return null;
+        }
+        return articles;
+    }
 }

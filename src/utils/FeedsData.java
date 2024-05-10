@@ -12,15 +12,15 @@ public class FeedsData {
     }
 
     public String getLabel() {
-        return label;
+        return this.label;
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public String getType() {
-        return type;
+        return this.type;
     }
 
     public void print() {

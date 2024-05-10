@@ -4,6 +4,7 @@ public class Config {
     private boolean printFeed = false;
     private boolean computeNamedEntities = false;
     private String feedKey;
+    //private String heuristicConfig;
     // TODO: A reference to the used heuristic will be needed here
 
     public Config(boolean printFeed, boolean computeNamedEntities, String feedKey) {

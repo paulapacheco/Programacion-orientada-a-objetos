@@ -1,7 +1,7 @@
 package feed;
 
 import java.io.BufferedReader;
-import java.io.IOException;  // eliminar
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
@@ -75,13 +75,20 @@ public class FeedParser {
         // Si se seleccionó un feed específico, se obtienen los artículos de ese feed
         // Si no, se obtienen los artículos de todos los feeds
         if (feedKey != null) {
+            boolean feedFound = false;
             for (FeedsData feedData : feedsDataList) {
                 if (feedData.getLabel().equals(feedKey)) {
+                    feedFound = true;
                     // Obtiene la lista de artículos del feed seleccionado
                     List<Article> articles = getArticles(feedData.getUrl());
                     allArticles.addAll(articles);
+                    System.out.println("Se han cargado " + articles.size() + " artículos del feed " + feedKey);
                     break;
                 }
+            }
+            if (!feedFound) {
+                System.out.println("No se ha encontrado el feed con la clave " + feedKey);
+                System.exit(1);
             }
         } else {
             for (FeedsData feedData : feedsDataList) {
@@ -89,6 +96,7 @@ public class FeedParser {
                 List<Article> articles = getArticles(feedData.getUrl());
                 allArticles.addAll(articles);
             }
+            System.out.println("Se han cargado " + allArticles.size() + " artículos de todos los feeds");
         }
         return allArticles;
     }
@@ -98,12 +106,7 @@ public class FeedParser {
         // Hace la solicitud HTTP al feed y devuelve el XML como un String
         String xmlData = fetchFeed(url);
         // Parsea el XML y devuelve una lista de artículos
-        List<Article> articles = parseXML(xmlData);
-        // Imprime los artículos
-        for (Article article : articles) {
-            article.printArticle();
-        }
-        return articles;
+        return parseXML(xmlData);
     }
 
     // Este método ya vino implementada
