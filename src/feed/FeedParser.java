@@ -20,9 +20,11 @@ import utils.FeedsData;
 
 public class FeedParser {
 
+    // TODO: Se puede usar private en vez de public para los métodos que no se usan en otras clases?
+
     // Este método ya está implementado y probado con un unit test
     // Este método es el que se encarga de parsear el contenido de un XML y devolver una lista de artículos
-    public static List<Article> parseXML(String xmlData) {
+    private static List<Article> parseXML(String xmlData) {
 
         List<Article> articles = new ArrayList<>();
 
@@ -50,9 +52,7 @@ public class FeedParser {
                     Node linkNode = element.getElementsByTagName("link").item(0);
                     Node pubDateNode = element.getElementsByTagName("pubDate").item(0);
 
-                    if (titleNode == null || descriptionNode == null || linkNode == null || pubDateNode == null) {
-                        continue;
-                    } else {
+                    if (!(titleNode == null || descriptionNode == null || linkNode == null || pubDateNode == null)) {
                         String title = titleNode.getTextContent();
                         String description = descriptionNode.getTextContent();
                         String link = linkNode.getTextContent();
@@ -104,7 +104,7 @@ public class FeedParser {
     }
 
     // Este método devuelve una lista de artículos a partir de una URL
-    public static List<Article> getArticles(String url) throws MalformedURLException, IOException, Exception {
+    private static List<Article> getArticles(String url) throws MalformedURLException, IOException, Exception {
         // Hace la solicitud HTTP al feed y devuelve el XML como un String
         String xmlData = fetchFeed(url);
         // Parsea el XML y devuelve una lista de artículos
@@ -113,7 +113,7 @@ public class FeedParser {
 
     // Este método ya vino implementada
     // Este método es el que se encarga de hacer la solicitud HTTP a la URL del feed
-    public static String fetchFeed(String feedURL) throws MalformedURLException, IOException, Exception {
+    private static String fetchFeed(String feedURL) throws MalformedURLException, IOException, Exception {
 
         HttpURLConnection connection = getHttpURLConnection(feedURL);
 

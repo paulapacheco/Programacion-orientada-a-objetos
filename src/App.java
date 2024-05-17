@@ -4,6 +4,9 @@ import java.util.List;
 
 import feed.Article;
 import feed.FeedParser;
+import namedEntities.ComputeNE;
+import namedEntities.NamedEntity;
+import namedEntities.heuristics.CapitalizedWordHeuristic;
 import utils.Config;
 import utils.FeedsData;
 import utils.JSONParser;
@@ -53,9 +56,16 @@ public class App {
         // Compute named entities
         if (config.getComputeNamedEntities()) {
             // TODO: complete the message with the selected heuristic name
-            System.out.println("Computing named entities using ");
+            String heuristicName = config.getHeuristicConfig();  // "capitalized" setted to use the CapitalizedWordHeuristic
+            System.out.println("Computing named entities using " + heuristicName + " heuristic...");
+            List<NamedEntity> allNamedEntities = new ArrayList<>();
 
-            // TODO: compute named entities using the selected heuristic
+            for (Article article : allArticles) {
+                List<NamedEntity> namedEntities = new ArrayList<>();
+                String texto = article.getTitle() + " " + article.getDescription();
+                namedEntities = ComputeNE.computeNamedEntities(texto, heuristicName, "src/data/dictionary.json");
+                allNamedEntities.addAll(namedEntities);
+            }
 
             // TODO: Print stats
             System.out.println("\nStats: ");
@@ -63,8 +73,6 @@ public class App {
         }
 
         // TODO Implement the stats format option
-
-        // Maybe we should check the stats format option first and then compute named entities option
 
     }
 

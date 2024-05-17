@@ -48,12 +48,12 @@ public class UserInterface {
         boolean printFeed = optionDict.containsKey("-pf");
         boolean computeNamedEntities = optionDict.containsKey("-ne");
         String feedKey = optionDict.get("-f");
-        // TODO: use value for heuristic config and stats format
-        //String heuristicConfig = optionDict.get("-ne");
+        String heuristicConfig = optionDict.get("-ne");
+        // TODO: use value for stats format
         //boolean statsFormat = optionDict.containsKey("-sf");
 
-        // TODO: Add heuristicConfig and statsFormat to the constructor
-        return new Config(printFeed, computeNamedEntities, feedKey);
+        // TODO: Add statsFormat to the constructor
+        return new Config(printFeed, computeNamedEntities, feedKey, heuristicConfig);
     }
 
     private static void printHelp(List<FeedsData> feedsDataArray) {

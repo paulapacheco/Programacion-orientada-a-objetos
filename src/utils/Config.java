@@ -4,15 +4,16 @@ public class Config {
     private boolean printFeed = false;
     private boolean computeNamedEntities = false;
     private String feedKey;
-    // TODO: A reference to the used heuristic and the stat format flag will be needed here
-    //private String heuristicConfig;
+    private String heuristicConfig;
+    // TODO: A reference to the stat format flag will be needed here
     //private boolean statsFormat = false;
 
-    // TODO: Add the heuristicConfig and statsFormat to the constructor
-    public Config(boolean printFeed, boolean computeNamedEntities, String feedKey) {
+    // TODO: Add statsFormat to the constructor
+    public Config(boolean printFeed, boolean computeNamedEntities, String feedKey, String heuristicConfig) {
         this.printFeed = printFeed;
         this.computeNamedEntities = computeNamedEntities;
         this.feedKey = feedKey;
+        this.heuristicConfig = heuristicConfig;
     }
 
     public boolean getPrintFeed() {
@@ -27,6 +28,10 @@ public class Config {
         return feedKey;
     }
 
-    // TODO: Add the getter methods for the heuristicConfig and statsFormat
+    public String getHeuristicConfig() {
+        return heuristicConfig;
+    }
+
+    // TODO: Add the getter method for statsFormat
 
 }
