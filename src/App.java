@@ -4,13 +4,16 @@ import java.util.List;
 
 import feed.Article;
 import feed.FeedParser;
-import namedEntities.ComputeNE;
-import namedEntities.NamedEntity;
-import namedEntities.heuristics.CapitalizedWordHeuristic;
 import utils.Config;
 import utils.FeedsData;
 import utils.JSONParser;
 import utils.UserInterface;
+import namedEntities.NamedEntity;
+import namedEntities.ComputeNE;
+import namedEntities.ComputeStats;
+
+import java.net.*;
+import java.io.*;
 
 public class App {
 
@@ -50,37 +53,53 @@ public class App {
 
         // Print the articles
         if (config.getPrintFeed() || !config.getComputeNamedEntities()) {
-            printAllArticles(allArticles, config);
+             for (Article article : allArticles) {
+                article.printArticle();
+            }
+            System.out.println(allArticles.size() + " articles printed from " + (config.getFeedKey() != null ? config.getFeedKey() : "all feeds"));
         }
+
 
         // Compute named entities
         if (config.getComputeNamedEntities()) {
             // TODO: complete the message with the selected heuristic name
-            String heuristicName = config.getHeuristicConfig();  // "capitalized" setted to use the CapitalizedWordHeuristic
-            System.out.println("Computing named entities using " + heuristicName + " heuristic...");
+            System.out.println("Computing named entities using " + config.getHeuristicConfig());
+
+
+            // TODO: compute named entities using the selected heuristic
+            String text;
+            List<NamedEntity> entities = new ArrayList<>();
             List<NamedEntity> allNamedEntities = new ArrayList<>();
 
-            for (Article article : allArticles) {
-                List<NamedEntity> namedEntities = new ArrayList<>();
-                String texto = article.getTitle() + " " + article.getDescription();
-                namedEntities = ComputeNE.computeNamedEntities(texto, heuristicName, "src/data/dictionary.json");
-                allNamedEntities.addAll(namedEntities);
-            }
+            for (int i = 0; i<allArticles.size() ;i++){
 
-            // TODO: Print stats
+                text = allArticles.get(i).getTitle() + " " +  allArticles.get(i).getDescription();
+
+                entities = ComputeNE.computeNamedEntities(text, config.getHeuristicConfig(), "src/data/dictionary.json");
+                
+                allNamedEntities.addAll(entities);
+            } 
+
+             // TODO: Print stats
+
             System.out.println("\nStats: ");
-            System.out.println("-".repeat(80));
-        }
+
+            ComputeStats.computeStatistics(allNamedEntities, config.getStatsFormat());
+        } 
+
+        System.out.println("-".repeat(80));
+    }
+        
+
+
+}
 
         // TODO Implement the stats format option
 
-    }
+        // Maybe we should check the stats format option first and then compute named entities option
 
-    // Print all articles from the list
-    private static void printAllArticles(List<Article> allArticles, Config config) {
-        for (Article article : allArticles) {
-            article.printArticle();
-        }
-        System.out.println(allArticles.size() + " articles printed from " + (config.getFeedKey() != null ? config.getFeedKey() : "all feeds"));
-    }
-}
+
+
+
+   
+

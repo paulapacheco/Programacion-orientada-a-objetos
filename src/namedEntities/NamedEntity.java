@@ -1,6 +1,10 @@
 package namedEntities;
 
 import java.util.List;
+import java.util.ArrayList;
+
+
+
 
 public class NamedEntity {
     private String label;
@@ -21,7 +25,7 @@ public class NamedEntity {
         listaLabels.add(label);
     }
 
-    public String getName() {
+    public String getLabel() {
         return this.label;
     }
 
@@ -33,8 +37,5 @@ public class NamedEntity {
         return this.topics;
     }
 
-    public static List<String> getListaLabels() {
-        return listaLabels;
-    }
 
 }

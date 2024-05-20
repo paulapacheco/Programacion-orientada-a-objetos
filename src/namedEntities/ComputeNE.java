@@ -1,6 +1,8 @@
+
 package namedEntities;
 
 import namedEntities.heuristics.CapitalizedWordHeuristic;
+import namedEntities.heuristics.CapitalizedWordOneWord;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -44,7 +46,9 @@ public abstract class ComputeNE {
             case "capitalized":
                 candidatos = CapitalizedWordHeuristic.extractCandidates(texto);
                 break;
-            // TODO: Add more cases for other heuristics
+            case "oneCapitalized":
+                candidatos = CapitalizedWordOneWord.extractCandidates(texto);
+                break;
         }
         return candidatos;
     }
@@ -53,12 +57,15 @@ public abstract class ComputeNE {
     private static NamedEntity categorizedEntity(String label, String category, List<String> topics) {
         NamedEntity ne = null;
         // Create the NamedEntity object based on the category
+
+        // String option = category
+
         switch (category) {
-            case "LOCATION":
-                ne = new LocationNE(label, category, topics);
-                break;
             case "PERSON":
                 ne = new PersonNE(label, category, topics);
+                break;
+            case "LOCATION":
+                ne = new LocationNE(label, category, topics);
                 break;
             case "ORGANIZATION":
                 ne = new OrganizationNE(label, category, topics);
@@ -101,3 +108,4 @@ public abstract class ComputeNE {
     }
 
 }
+
