@@ -4,7 +4,6 @@ import java.util.List;
 
 public class LocationNE extends NamedEntity {
 
-    // TODO: Add other attributes
     private String latitud;
     private String longitud;
 

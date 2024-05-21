@@ -4,14 +4,13 @@ import java.util.List;
 
 public class OtherNE extends NamedEntity {
 
-    // TODO: Add other attributes
-    private String otherField;
+    private String suggestedCategory;
 
     public OtherNE(String label, String category, List<String> topics) {
         super(label, category, topics);
     }
 
-    public String getOtherField() {
-        return this.otherField;
+    public String getSuggestedCategory() {
+        return this.suggestedCategory;
     }
 }

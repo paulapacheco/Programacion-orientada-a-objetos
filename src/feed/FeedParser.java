@@ -18,9 +18,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import utils.FeedsData;
 
-public class FeedParser {
-
-    // TODO: Se puede usar private en vez de public para los métodos que no se usan en otras clases?
+public abstract class FeedParser {
 
     // Este método ya está implementado y probado con un unit test
     // Este método es el que se encarga de parsear el contenido de un XML y devolver una lista de artículos

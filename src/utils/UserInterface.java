@@ -50,10 +50,7 @@ public class UserInterface {
         String feedKey = optionDict.get("-f");
         String heuristicConfig = optionDict.get("-ne");
         String statsFormat = optionDict.get("-sf");
-        // TODO: use value for stats format
-        //boolean statsFormat = optionDict.containsKey("-sf");
 
-        // TODO: Add statsFormat to the constructor
         return new Config(printFeed, computeNamedEntities, feedKey, heuristicConfig, statsFormat);
     }
 

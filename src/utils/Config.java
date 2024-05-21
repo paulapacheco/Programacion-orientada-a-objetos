@@ -5,11 +5,8 @@ public class Config {
     private boolean computeNamedEntities = false;
     private String feedKey;
     private String heuristicConfig;
-    private String statsFormat = "cat";
-    // TODO: A reference to the stat format flag will be needed here
-    //private boolean statsFormat = false;
+    private String statsFormat;
 
-    // TODO: Add statsFormat to the constructor
     public Config(boolean printFeed, boolean computeNamedEntities, String feedKey, String heuristicConfig, String statsFormat) {
         this.printFeed = printFeed;
         this.computeNamedEntities = computeNamedEntities;
@@ -37,7 +34,4 @@ public class Config {
        public String getStatsFormat() {
         return statsFormat;
     }
-
-    // TODO: Add the getter method for statsFormat
-
 }

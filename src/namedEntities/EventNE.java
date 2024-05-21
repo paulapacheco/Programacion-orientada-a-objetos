@@ -1,17 +1,17 @@
 package namedEntities;
 
+import java.util.Date;
 import java.util.List;
 
 public class EventNE extends NamedEntity {
 
-    // TODO: Add other attributes
-    private String date;
+    private Date date;
 
     public EventNE(String label, String category, List<String> topics) {
         super(label, category, topics);
     }
 
-    public String getDate() {
+    public Date getDate() {
         return this.date;
     }
 }

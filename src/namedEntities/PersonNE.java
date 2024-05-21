@@ -4,7 +4,6 @@ import java.util.List;
 
 public class PersonNE extends NamedEntity{
 
-    // TODO: Add other attributes
     private String name;
     private int age;
 

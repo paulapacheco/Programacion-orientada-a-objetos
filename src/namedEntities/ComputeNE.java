@@ -1,8 +1,8 @@
-
 package namedEntities;
 
 import namedEntities.heuristics.CapitalizedWordHeuristic;
 import namedEntities.heuristics.CapitalizedWordOneWord;
+import namedEntities.heuristics.CapitalizedWordPoint;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class ComputeNE {
 
@@ -41,71 +42,41 @@ public abstract class ComputeNE {
 
     // This method extracts the candidates from the text using the heuristic
     private static List<String> getCandidatos(String texto, String heuristicName) {
-        List<String> candidatos = new ArrayList<>();
-        switch (heuristicName) {
-            case "capitalized":
-                candidatos = CapitalizedWordHeuristic.extractCandidates(texto);
-                break;
-            case "oneCapitalized":
-                candidatos = CapitalizedWordOneWord.extractCandidates(texto);
-                break;
-        }
-        return candidatos;
+        return switch (heuristicName) {
+            case "capitalized" -> CapitalizedWordHeuristic.extractCandidates(texto);
+            case "oneCapitalized" -> CapitalizedWordOneWord.extractCandidates(texto);
+            case "capitalizedPoint" -> CapitalizedWordPoint.extractCandidates(texto);
+            default -> throw new IllegalArgumentException("Heuristic not found");
+        };
     }
 
     // This method categorizes the named entity based on the category
     private static NamedEntity categorizedEntity(String label, String category, List<String> topics) {
-        NamedEntity ne = null;
         // Create the NamedEntity object based on the category
-
-        // String option = category
-
-        switch (category) {
-            case "PERSON":
-                ne = new PersonNE(label, category, topics);
-                break;
-            case "LOCATION":
-                ne = new LocationNE(label, category, topics);
-                break;
-            case "ORGANIZATION":
-                ne = new OrganizationNE(label, category, topics);
-                break;
-            case "OTHER":
-                ne = new OtherNE(label, category, topics);
-                break;
-            case "EVENT":
-                ne = new EventNE(label, category, topics);
-                break;
-        }
-        return ne;
+        return switch (category) {
+            case "PERSON" -> new PersonNE(label, category, topics);
+            case "LOCATION" -> new LocationNE(label, category, topics);
+            case "ORGANIZATION" -> new OrganizationNE(label, category, topics);
+            case "OTHER" -> new OtherNE(label, category, topics);
+            case "EVENT" -> new EventNE(label, category, topics);
+            default -> null;
+        };
     }
 
     // TODO: Add a tree search to improve the performance of this method
     // This method checks if the named entity exists in the JSON file
     private static NamedEntity searchNamedEntity(String candidato, JSONArray jsonArray) {
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            JSONArray arrayKeywords = (JSONArray) jsonObject.get("keywords");
-            for (int j = 0; j < arrayKeywords.length(); j++) {
-                // Check if the candidate exists in the JSONArray of keywords
-                if (arrayKeywords.getString(j).equals(candidato)) {
-                    String label = jsonObject.getString("label");
-                    String category = jsonObject.getString("Category");
-                    // Change the topics from JSONArray to List<String>
-                    JSONArray arrayTopics = jsonObject.getJSONArray("Topics");
-                    List<String> topics = new ArrayList<>();
-                    for (int k = 0; k < arrayTopics.length(); k++) {
-                        topics.add(arrayTopics.getString(k));
-                    }
-                    // Create the NamedEntity object
-                    NamedEntity namedEnt = categorizedEntity(label, category, topics);
-                    return namedEnt;
+        for (Object jsonObject : jsonArray) {
+            JSONArray arrayKeywords = (JSONArray) ((JSONObject) jsonObject).get("keywords");
+            for (Object keyword : arrayKeywords) {
+                if (keyword.toString().equals(candidato)) {
+                    String label = ((JSONObject) jsonObject).getString("label");
+                    String category = ((JSONObject) jsonObject).getString("Category");
+                    List<String> topics = ((JSONObject) jsonObject).getJSONArray("Topics").toList().stream().map(Object::toString).collect(Collectors.toList());
+                    return categorizedEntity(label, category, topics);
                 }
             }
-
         }
         return null;
     }
-
 }
-

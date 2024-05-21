@@ -4,7 +4,6 @@ import java.util.List;
 
 public class OrganizationNE extends NamedEntity {
 
-    // TODO: Add other attributes
     private String tipoSocietario;
     private String capital;
 
