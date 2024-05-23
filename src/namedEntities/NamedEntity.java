@@ -1,7 +1,6 @@
 package namedEntities;
 
 import java.util.List;
-import java.util.ArrayList;
 
 public abstract class NamedEntity {
     private String label;

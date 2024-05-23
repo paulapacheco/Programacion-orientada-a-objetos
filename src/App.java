@@ -12,12 +12,10 @@ import namedEntities.NamedEntity;
 import namedEntities.ComputeNE;
 import namedEntities.ComputeStats;
 
-import java.net.*;
-import java.io.*;
-
 public class App {
 
     public static void main(String[] args) throws Exception {
+
         List<FeedsData> feedsDataArray = new ArrayList<>();
         try {
             // Lista de objetos FeedsData, que contienen la información de los feeds

@@ -70,7 +70,7 @@ public abstract class FeedParser {
 
     // Este método ya está implementado y probado con un unit test
     // Este método es el que se encarga de leer el archivo feeds.json y parsear cada feed
-    public static List<Article> getArticlesFromFeeds(List<FeedsData> feedsDataList, String feedKey) throws MalformedURLException, IOException, Exception {
+    public static List<Article> getArticlesFromFeeds(List<FeedsData> feedsDataList, String feedKey) throws Exception {
 
         List<Article> allArticles = new ArrayList<>();
 
@@ -135,12 +135,7 @@ public abstract class FeedParser {
     private static HttpURLConnection getHttpURLConnection(String feedURL) throws IOException {
         URL url = new URL(feedURL);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
         connection.setRequestMethod("GET");
-        //connection.setRequestProperty("Content-Type", "application/json");   No sé por qué estaba esto
-
-        // TODO: Cambiar el user-agent al nombre de su grupo. done
-        // Si todos los grupos usan el mismo user-agent, el servidor puede bloquear las solicitudes.
         connection.setRequestProperty("User-Agent", "lab_paradigmas_group_33");
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);

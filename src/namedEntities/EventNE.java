@@ -11,6 +11,10 @@ public class EventNE extends NamedEntity {
         super(label, category, topics);
     }
 
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public Date getDate() {
         return this.date;
     }

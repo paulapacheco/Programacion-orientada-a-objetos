@@ -7,7 +7,6 @@ import java.util.List;
 public class UserInterface {
 
     private HashMap<String, String> optionDict;
-
     private List<Option> options;
 
     public UserInterface() {
@@ -68,7 +67,10 @@ public class UserInterface {
         System.out.println("                                       named entities");
         System.out.println("                                       Available heuristic names are: ");
         // TODO: Print the available heuristics with the following format
-        System.out.println("                                       <name>: <description>");
+        System.out.println("                                       capitalized : Palabras mayúsculas");
+        System.out.println("                                       oneCapitalized : Palabra mayúscula única");
+        System.out.println("                                       capitalizedPoint : Palabras mayúsculas eliminando las que le siguen a un punto");
+        System.out.println("                                       openAI : Utiliza ChtaGPT para buscar los candidatos");
         System.out.println("  -pf, --print-feed:                   Print the fetched feed");
         System.out.println("  -sf, --stats-format <format>:        Print the stats in the specified format");
         System.out.println("                                       Available formats are: ");

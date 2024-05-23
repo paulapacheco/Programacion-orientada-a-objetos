@@ -10,6 +10,10 @@ public class OtherNE extends NamedEntity {
         super(label, category, topics);
     }
 
+    public void setSuggestedCategory(String suggestedCategory) {
+        this.suggestedCategory = suggestedCategory;
+    }
+
     public String getSuggestedCategory() {
         return this.suggestedCategory;
     }

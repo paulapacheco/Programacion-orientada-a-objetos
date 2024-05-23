@@ -3,6 +3,7 @@ package namedEntities;
 import namedEntities.heuristics.CapitalizedWordHeuristic;
 import namedEntities.heuristics.CapitalizedWordOneWord;
 import namedEntities.heuristics.CapitalizedWordPoint;
+import namedEntities.heuristics.OpenAIHeuristic;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 public abstract class ComputeNE {
 
-    public static List<NamedEntity> computeNamedEntities(String texto, String heuristicName, String jsonFilePath) throws IOException {
+    public static List<NamedEntity> computeNamedEntities(String texto, String heuristicName, String jsonFilePath) throws Exception {
 
         // Extract the candidates from the text using the heuristic
         List<String> candidatos = getCandidatos(texto, heuristicName);
@@ -25,27 +26,34 @@ public abstract class ComputeNE {
         String dictionary = new String(Files.readAllBytes(Paths.get(jsonFilePath)));
         JSONArray dictArray = new JSONArray(dictionary);
 
+        // Create the binary search tree and insert the entities from the JSON file
+        BinarySearchTree tree = new BinarySearchTree();
+        for (Object entityObject : dictArray) {
+            tree.insert((JSONObject) entityObject);
+        }
+
         List<NamedEntity> allEntities = new ArrayList<>();
 
         for (String candidato : candidatos) {
             // Check if the named entity exists in the JSON file and create the NamedEntity object
-            NamedEntity namedEnt = searchNamedEntity(candidato, dictArray);
-            if (namedEnt != null) {
-                allEntities.add(namedEnt);
+            NamedEntity entity = searchNamedEntity(candidato, tree);
+            if (entity != null) {
+                allEntities.add(entity);
             } else {
-                namedEnt = categorizedEntity(candidato, "OTHER", Collections.singletonList("OTHER"));
-                allEntities.add(namedEnt);
+                entity = categorizedEntity(candidato, "OTHER", Collections.singletonList("OTHER"));
+                allEntities.add(entity);
             }
         }
         return allEntities;
     }
 
     // This method extracts the candidates from the text using the heuristic
-    private static List<String> getCandidatos(String texto, String heuristicName) {
+    private static List<String> getCandidatos(String texto, String heuristicName) throws Exception {
         return switch (heuristicName) {
             case "capitalized" -> CapitalizedWordHeuristic.extractCandidates(texto);
             case "oneCapitalized" -> CapitalizedWordOneWord.extractCandidates(texto);
             case "capitalizedPoint" -> CapitalizedWordPoint.extractCandidates(texto);
+            case "openAI" -> OpenAIHeuristic.extractCandidates(texto);
             default -> throw new IllegalArgumentException("Heuristic not found");
         };
     }
@@ -63,20 +71,67 @@ public abstract class ComputeNE {
         };
     }
 
-    // TODO: Add a tree search to improve the performance of this method
     // This method checks if the named entity exists in the JSON file
-    private static NamedEntity searchNamedEntity(String candidato, JSONArray jsonArray) {
-        for (Object jsonObject : jsonArray) {
-            JSONArray arrayKeywords = (JSONArray) ((JSONObject) jsonObject).get("keywords");
-            for (Object keyword : arrayKeywords) {
-                if (keyword.toString().equals(candidato)) {
-                    String label = ((JSONObject) jsonObject).getString("label");
-                    String category = ((JSONObject) jsonObject).getString("Category");
-                    List<String> topics = ((JSONObject) jsonObject).getJSONArray("Topics").toList().stream().map(Object::toString).collect(Collectors.toList());
-                    return categorizedEntity(label, category, topics);
-                }
-            }
+    private static NamedEntity searchNamedEntity(String candidato, BinarySearchTree tree) {
+        JSONObject entityObject = tree.search(candidato);
+        if (entityObject != null) {
+            String label = entityObject.getString("label");
+            String category = entityObject.getString("Category");
+            List<String> topics = entityObject.getJSONArray("Topics").toList().stream().map(Object::toString).collect(Collectors.toList());
+            return categorizedEntity(label, category, topics);
         }
         return null;
+    }
+}
+
+class TreeNode {
+    JSONObject entityObject;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode(JSONObject entityObject) {
+        this.entityObject = entityObject;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinarySearchTree {
+    TreeNode root;
+
+    // Método para insertar nodos en el árbol
+    public void insert(JSONObject entityObject) {
+        root = insertRec(root, entityObject);
+    }
+
+    // Método recursivo para insertar un nuevo nodo en el árbol de búsqueda binario
+    TreeNode insertRec(TreeNode root, JSONObject entityObject) {
+        if (root == null) {
+            root = new TreeNode(entityObject);
+            return root;
+        }
+        int compareResult = entityObject.getString("label").compareTo(root.entityObject.getString("label"));
+        if (compareResult < 0) {
+            root.left = insertRec(root.left, entityObject);
+        } else if (compareResult > 0) {
+            root.right = insertRec(root.right, entityObject);
+        }
+        return root;
+    }
+
+    // Método para buscar un nodo en el árbol
+    public JSONObject search(String label) {
+        return searchRec(root, label);
+    }
+
+    // Método recursivo para buscar un nodo en el árbol
+    JSONObject searchRec(TreeNode root, String label) {
+        if (root == null || root.entityObject.getString("label").equals(label)) {
+            return root != null ? root.entityObject : null;
+        }
+        if (root.entityObject.getString("label").compareTo(label) > 0) {
+            return searchRec(root.left, label);
+        }
+        return searchRec(root.right, label);
     }
 }

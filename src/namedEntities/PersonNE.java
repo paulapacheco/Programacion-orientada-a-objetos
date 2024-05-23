@@ -11,6 +11,14 @@ public class PersonNE extends NamedEntity{
         super(label, category, topics);
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public String getName() {
         return this.name;
     }

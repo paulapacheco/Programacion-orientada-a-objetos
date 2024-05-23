@@ -11,6 +11,14 @@ public class OrganizationNE extends NamedEntity {
         super(label, category, topics);
     }
 
+    public void setTipoSocietario(String tipoSocietario) {
+        this.tipoSocietario = tipoSocietario;
+    }
+
+    public void setCapital(String capital) {
+        this.capital = capital;
+    }
+
     public String getTipoSocietario(String tipoSocietario) {
         return this.tipoSocietario;
     }

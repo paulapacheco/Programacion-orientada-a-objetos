@@ -31,7 +31,7 @@ public class Config {
         return heuristicConfig;
     }
 
-       public String getStatsFormat() {
+    public String getStatsFormat() {
         return statsFormat;
     }
 }

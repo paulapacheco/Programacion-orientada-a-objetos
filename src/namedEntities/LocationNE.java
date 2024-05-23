@@ -11,6 +11,14 @@ public class LocationNE extends NamedEntity {
         super(label, category, topics);
     }
 
+    public void setLatitud(String latitud) {
+        this.latitud = latitud;
+    }
+
+    public void setLongitud(String longitud) {
+        this.longitud = longitud;
+    }
+
     public String getLatitud() {
         return this.latitud;
     }

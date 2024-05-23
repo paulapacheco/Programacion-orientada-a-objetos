@@ -11,11 +11,11 @@ public class CapitalizedWordPoint {
         List<String> candidates = new ArrayList<>();
 
         text = text.replaceAll("[-+,^:\"]", "");
-        text = text.replaceAll("\\.\\s[A-Z]", " ");
+        text = text.replaceAll("\\.\\s[A-Z]+[a-z]*+", " ");
         text = Normalizer.normalize(text, Normalizer.Form.NFD);
         text = text.replaceAll("\\p{M}", "");
 
-        Pattern pattern = Pattern.compile("[A-Z][a-z]+(?:\\s[A-Z][a-z]+)*");
+        Pattern pattern = Pattern.compile("[A-Z]+[a-z]*+(?:\\s[A-Z]+[a-z]*+)*");
 
         Matcher matcher = pattern.matcher(text);
 
