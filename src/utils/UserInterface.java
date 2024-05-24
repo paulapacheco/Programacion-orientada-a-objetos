@@ -70,7 +70,6 @@ public class UserInterface {
         System.out.println("                                       capitalized : Palabras mayúsculas");
         System.out.println("                                       oneCapitalized : Palabra mayúscula única");
         System.out.println("                                       capitalizedPoint : Palabras mayúsculas eliminando las que le siguen a un punto");
-        System.out.println("                                       openAI : Utiliza ChtaGPT para buscar los candidatos");
         System.out.println("  -pf, --print-feed:                   Print the fetched feed");
         System.out.println("  -sf, --stats-format <format>:        Print the stats in the specified format");
         System.out.println("                                       Available formats are: ");

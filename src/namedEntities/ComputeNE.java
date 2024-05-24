@@ -3,7 +3,6 @@ package namedEntities;
 import namedEntities.heuristics.CapitalizedWordHeuristic;
 import namedEntities.heuristics.CapitalizedWordOneWord;
 import namedEntities.heuristics.CapitalizedWordPoint;
-import namedEntities.heuristics.OpenAIHeuristic;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -53,7 +52,6 @@ public abstract class ComputeNE {
             case "capitalized" -> CapitalizedWordHeuristic.extractCandidates(texto);
             case "oneCapitalized" -> CapitalizedWordOneWord.extractCandidates(texto);
             case "capitalizedPoint" -> CapitalizedWordPoint.extractCandidates(texto);
-            case "openAI" -> OpenAIHeuristic.extractCandidates(texto);
             default -> throw new IllegalArgumentException("Heuristic not found");
         };
     }
