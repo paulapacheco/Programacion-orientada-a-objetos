@@ -1,8 +1,8 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import feed.Article;
+import feed.ArticleList;
 import feed.FeedParser;
 import utils.Config;
 import utils.FeedsData;
@@ -40,7 +40,7 @@ public class App {
         }
 
         // Load all articles from the feed(s)
-        List<Article> allArticles;
+        ArticleList allArticles;
         if (config.getFeedKey() != null) {
             allArticles = FeedParser.getArticlesFromFeeds(feedsDataArray, config.getFeedKey());
         } else {
@@ -49,12 +49,12 @@ public class App {
 
         // Print the articles
         if (config.getPrintFeed() || !config.getComputeNamedEntities()) {
-            for (Article article : allArticles) {
+            /*for (Article article : allArticles) {
                 article.printArticle();
-            }
-            System.out.println(allArticles.size() + " articles printed from " + (config.getFeedKey() != null ? config.getFeedKey() : "all feeds"));
+            }*/
+            allArticles.printArticles();
+            System.out.println(allArticles.getArticlesSize() + " articles printed from " + (config.getFeedKey() != null ? config.getFeedKey() : "all feeds"));
         }
-
 
         // Compute named entities
         if (config.getComputeNamedEntities()) {

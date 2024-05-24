@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,9 +20,9 @@ public abstract class FeedParser {
 
     // Este método ya está implementado y probado con un unit test
     // Este método es el que se encarga de parsear el contenido de un XML y devolver una lista de artículos
-    private static List<Article> parseXML(String xmlData) {
+    private static ArticleList parseXML(String xmlData) {
 
-        List<Article> articles = new ArrayList<>();
+        ArticleList articles = new ArticleList();
 
         try {
             // Crea un DocumentBuilder para parsear el XML
@@ -57,7 +55,7 @@ public abstract class FeedParser {
                         String pubDate = pubDateNode.getTextContent();
 
                         // Crea un nuevo artículo y lo añade a la lista de artículos
-                        articles.add(new Article(title, description, link, pubDate));
+                        articles.addArticle(new Article(title, description, link, pubDate));
                     }
                 }
             }
@@ -70,9 +68,9 @@ public abstract class FeedParser {
 
     // Este método ya está implementado y probado con un unit test
     // Este método es el que se encarga de leer el archivo feeds.json y parsear cada feed
-    public static List<Article> getArticlesFromFeeds(List<FeedsData> feedsDataList, String feedKey) throws Exception {
+    public static ArticleList getArticlesFromFeeds(List<FeedsData> feedsDataList, String feedKey) throws Exception {
 
-        List<Article> allArticles = new ArrayList<>();
+        ArticleList allArticles = new ArticleList();
 
         // Si se seleccionó un feed específico, se obtienen los artículos de ese feed
         // Si no, se obtienen los artículos de todos los feeds
@@ -82,8 +80,10 @@ public abstract class FeedParser {
                 if (feedData.getLabel().equals(feedKey)) {
                     feedFound = true;
                     // Obtiene la lista de artículos del feed seleccionado
-                    List<Article> articles = getArticles(feedData.getUrl());
-                    allArticles.addAll(articles);
+                    ArticleList articles = getArticles(feedData.getUrl());
+                    for (Article article : articles) {
+                        allArticles.addArticle(article);
+                    }
                     break;
                 }
             }
@@ -94,15 +94,17 @@ public abstract class FeedParser {
         } else {
             for (FeedsData feedData : feedsDataList) {
                 // Obtiene la lista de artículos de cada feed
-                List<Article> articles = getArticles(feedData.getUrl());
-                allArticles.addAll(articles);
+                ArticleList articles = getArticles(feedData.getUrl());
+                for (Article article : articles) {
+                    allArticles.addArticle(article);
+                }
             }
         }
         return allArticles;
     }
 
     // Este método devuelve una lista de artículos a partir de una URL
-    private static List<Article> getArticles(String url) throws MalformedURLException, IOException, Exception {
+    private static ArticleList getArticles(String url) throws Exception {
         // Hace la solicitud HTTP al feed y devuelve el XML como un String
         String xmlData = fetchFeed(url);
         // Parsea el XML y devuelve una lista de artículos
@@ -111,7 +113,7 @@ public abstract class FeedParser {
 
     // Este método ya vino implementada
     // Este método es el que se encarga de hacer la solicitud HTTP a la URL del feed
-    private static String fetchFeed(String feedURL) throws MalformedURLException, IOException, Exception {
+    private static String fetchFeed(String feedURL) throws Exception {
 
         HttpURLConnection connection = getHttpURLConnection(feedURL);
 

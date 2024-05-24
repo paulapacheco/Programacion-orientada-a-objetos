@@ -51,7 +51,7 @@ public abstract class ComputeStats {
                     }
                     break;
                 case "ORGANIZATION":
-                    indice = pertenece(entity, event);
+                    indice = pertenece(entity, organization);
                     if (indice == -1) {
                         organization.add(new EntityStats(entity.getLabel(), 1));
                     } else {
@@ -90,7 +90,7 @@ public abstract class ComputeStats {
 
         List<EntityStats> politics  = new ArrayList<>();
         List<EntityStats> sports  = new ArrayList<>();
-        List<EntityStats> economy = new ArrayList<>();
+        List<EntityStats> economics = new ArrayList<>();
         List<EntityStats> health  = new ArrayList<>();
         List<EntityStats> technology  = new ArrayList<>();
         List<EntityStats> entertainment = new ArrayList<>();
@@ -119,11 +119,11 @@ public abstract class ComputeStats {
                         break;
 
                     case "ECONOMICS":
-                        indice = pertenece(entity, economy);
+                        indice = pertenece(entity, economics);
                         if (indice == -1) {
-                            economy.add(new EntityStats(entity.getLabel(), 1));
+                            economics.add(new EntityStats(entity.getLabel(), 1));
                         } else {
-                            economy.get(indice).aumentarUno();
+                            economics.get(indice).aumentarUno();
                         }
                         break;
 
@@ -155,7 +155,7 @@ public abstract class ComputeStats {
                         break;
 
                     case "ENTERTAINMENT":
-                        indice = pertenece(entity, business);
+                        indice = pertenece(entity, entertainment);
                         if (indice == -1) {
                             entertainment.add(new EntityStats(entity.getLabel(), 1));
                         } else {
@@ -177,7 +177,7 @@ public abstract class ComputeStats {
 
         printTopicStats(politics, "POLITICS");
         printTopicStats(sports, "SPORTS");
-        printTopicStats(economy, "ECONOMICS");
+        printTopicStats(economics, "ECONOMICS");
         printTopicStats(health, "HEALTH");
         printTopicStats(technology, "TECHNOLOGY");
         printTopicStats(entertainment, "ENTERTAINMENT");

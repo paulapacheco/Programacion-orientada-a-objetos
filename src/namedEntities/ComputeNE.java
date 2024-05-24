@@ -22,8 +22,7 @@ public abstract class ComputeNE {
         List<String> candidatos = getCandidatos(texto, heuristicName);
 
         // Read the JSON dictionary file
-        String dictionary = new String(Files.readAllBytes(Paths.get(jsonFilePath)));
-        JSONArray dictArray = new JSONArray(dictionary);
+        JSONArray dictArray = new JSONArray(Files.readString(Paths.get(jsonFilePath)));
 
         // Create the binary search tree and insert the entities from the JSON file
         BinarySearchTree tree = new BinarySearchTree();

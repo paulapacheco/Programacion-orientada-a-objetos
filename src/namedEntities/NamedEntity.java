@@ -13,6 +13,12 @@ public abstract class NamedEntity {
         this.topics = topics;
     }
 
+    /*
+    private String label;
+    private Cqtegory category;
+    private Set<Topic> topics;
+    *
+    * */
     public String getLabel() {
         return this.label;
     }
