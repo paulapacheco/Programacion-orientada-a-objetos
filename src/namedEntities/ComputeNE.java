@@ -1,12 +1,11 @@
 package namedEntities;
 
+import namedEntities.entitiesManager.*;
 import namedEntities.heuristics.CapitalizedWordHeuristic;
 import namedEntities.heuristics.CapitalizedWordOneWord;
 import namedEntities.heuristics.CapitalizedWordPoint;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public abstract class ComputeNE {
     }
 
     // This method extracts the candidates from the text using the heuristic
-    private static List<String> getCandidatos(String texto, String heuristicName) throws Exception {
+    private static List<String> getCandidatos(String texto, String heuristicName) {
         return switch (heuristicName) {
             case "capitalized" -> CapitalizedWordHeuristic.extractCandidates(texto);
             case "oneCapitalized" -> CapitalizedWordOneWord.extractCandidates(texto);

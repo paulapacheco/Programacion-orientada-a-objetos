@@ -1,4 +1,4 @@
-package namedEntities;
+package namedEntities.entitiesManager;
 
 import java.util.List;
 

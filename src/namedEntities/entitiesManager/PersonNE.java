@@ -1,8 +1,8 @@
-package namedEntities;
+package namedEntities.entitiesManager;
 
 import java.util.List;
 
-public class PersonNE extends NamedEntity{
+public class PersonNE extends NamedEntity {
 
     private String name;
     private int age;

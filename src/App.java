@@ -8,7 +8,7 @@ import utils.Config;
 import utils.FeedsData;
 import utils.JSONParser;
 import utils.UserInterface;
-import namedEntities.NamedEntity;
+import namedEntities.entitiesManager.NamedEntity;
 import namedEntities.ComputeNE;
 import namedEntities.ComputeStats;
 
