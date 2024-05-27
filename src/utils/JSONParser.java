@@ -5,17 +5,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class JSONParser {
 
     static public List<FeedsData> parseJsonFeedsData(String jsonFilePath) throws IOException {
-        String jsonData = new String(Files.readAllBytes(Paths.get(jsonFilePath)));
+        JSONArray jsonArray = new JSONArray(Files.readString(Paths.get(jsonFilePath)));
         List<FeedsData> feedsList = new ArrayList<>();
-
-        JSONArray jsonArray = new JSONArray(jsonData);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             String label = jsonObject.getString("label");
@@ -26,5 +24,18 @@ public class JSONParser {
         return feedsList;
     }
 
-}
+    static public List<DictData> parseJsonDictData(String jsonFilePath) throws IOException {
+        JSONArray jsonArray = new JSONArray(Files.readString(Paths.get(jsonFilePath)));
+        List<DictData> dictList = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String label = jsonObject.getString("label");
+            String category = jsonObject.getString("Category");
+            List<String> topics = jsonObject.getJSONArray("Topics").toList().stream().map(Object::toString).collect(Collectors.toList());
+            List<String> keywords = jsonObject.getJSONArray("keywords").toList().stream().map(Object::toString).toList();
+            dictList.add(new DictData(label, category, topics, keywords));
+        }
+        return dictList;
+    }
 
+}

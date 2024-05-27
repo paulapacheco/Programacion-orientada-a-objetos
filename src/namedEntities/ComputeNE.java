@@ -4,36 +4,34 @@ import namedEntities.entitiesManager.*;
 import namedEntities.heuristics.CapitalizedWordHeuristic;
 import namedEntities.heuristics.CapitalizedWordOneWord;
 import namedEntities.heuristics.CapitalizedWordPoint;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import utils.DictData;
+import utils.JSONParser;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class ComputeNE {
 
-    public static List<NamedEntity> computeNamedEntities(String texto, String heuristicName, String jsonFilePath) throws Exception {
+    public static List<NamedEntity> computeNamedEntities(String texto, String heuristicName, String jsonFilePath) {
 
         // Extract the candidates from the text using the heuristic
         List<String> candidatos = getCandidatos(texto, heuristicName);
 
-        // Read the JSON dictionary file
-        JSONArray dictArray = new JSONArray(Files.readString(Paths.get(jsonFilePath)));
-
-        // Create the binary search tree and insert the entities from the JSON file
-        BinarySearchTree tree = new BinarySearchTree();
-        for (Object entityObject : dictArray) {
-            tree.insert((JSONObject) entityObject);
+        // Read the JSON dictionary file and create a list of DictData objects
+        List<DictData> dict = new ArrayList<>();
+        try {
+            dict = JSONParser.parseJsonDictData(jsonFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
 
         List<NamedEntity> allEntities = new ArrayList<>();
 
         for (String candidato : candidatos) {
             // Check if the named entity exists in the JSON file and create the NamedEntity object
-            NamedEntity entity = searchNamedEntity(candidato, tree);
+            NamedEntity entity = searchNamedEntity(candidato, dict);
             if (entity != null) {
                 allEntities.add(entity);
             } else {
@@ -67,67 +65,15 @@ public abstract class ComputeNE {
         };
     }
 
-    // This method checks if the named entity exists in the JSON file
-    private static NamedEntity searchNamedEntity(String candidato, BinarySearchTree tree) {
-        JSONObject entityObject = tree.search(candidato);
-        if (entityObject != null) {
-            String label = entityObject.getString("label");
-            String category = entityObject.getString("Category");
-            List<String> topics = entityObject.getJSONArray("Topics").toList().stream().map(Object::toString).collect(Collectors.toList());
-            return categorizedEntity(label, category, topics);
+    // This method checks if the named entity exists in the dictionary
+    private static NamedEntity searchNamedEntity(String candidato, List<DictData> dict) {
+        for (DictData elem : dict) {
+            for (String keyword : elem.getKeywords()) {
+                if (keyword.equals(candidato)) {
+                    return categorizedEntity(elem.getLabel(), elem.getCategory(), elem.getTopics());
+                }
+            }
         }
         return null;
-    }
-}
-
-class TreeNode {
-    JSONObject entityObject;
-    TreeNode left;
-    TreeNode right;
-
-    TreeNode(JSONObject entityObject) {
-        this.entityObject = entityObject;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class BinarySearchTree {
-    TreeNode root;
-
-    // Método para insertar nodos en el árbol
-    public void insert(JSONObject entityObject) {
-        root = insertRec(root, entityObject);
-    }
-
-    // Método recursivo para insertar un nuevo nodo en el árbol de búsqueda binario
-    TreeNode insertRec(TreeNode root, JSONObject entityObject) {
-        if (root == null) {
-            root = new TreeNode(entityObject);
-            return root;
-        }
-        int compareResult = entityObject.getString("label").compareTo(root.entityObject.getString("label"));
-        if (compareResult < 0) {
-            root.left = insertRec(root.left, entityObject);
-        } else if (compareResult > 0) {
-            root.right = insertRec(root.right, entityObject);
-        }
-        return root;
-    }
-
-    // Método para buscar un nodo en el árbol
-    public JSONObject search(String label) {
-        return searchRec(root, label);
-    }
-
-    // Método recursivo para buscar un nodo en el árbol
-    JSONObject searchRec(TreeNode root, String label) {
-        if (root == null || root.entityObject.getString("label").equals(label)) {
-            return root != null ? root.entityObject : null;
-        }
-        if (root.entityObject.getString("label").compareTo(label) > 0) {
-            return searchRec(root.left, label);
-        }
-        return searchRec(root.right, label);
     }
 }

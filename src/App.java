@@ -49,9 +49,6 @@ public class App {
 
         // Print the articles
         if (config.getPrintFeed() || !config.getComputeNamedEntities()) {
-            /*for (Article article : allArticles) {
-                article.printArticle();
-            }*/
             allArticles.printArticles();
             System.out.println(allArticles.getArticlesSize() + " articles printed from " + (config.getFeedKey() != null ? config.getFeedKey() : "all feeds"));
         }
@@ -59,7 +56,7 @@ public class App {
         // Compute named entities
         if (config.getComputeNamedEntities()) {
             System.out.println("Computing named entities using " + config.getHeuristicConfig());
-            List<NamedEntity> entities = new ArrayList<>();
+            List<NamedEntity> entities;
             List<NamedEntity> allNamedEntities = new ArrayList<>();
 
             for (Article article : allArticles) {

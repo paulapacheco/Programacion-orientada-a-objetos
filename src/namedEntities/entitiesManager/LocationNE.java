@@ -3,7 +3,6 @@ package namedEntities.entitiesManager;
 import java.util.List;
 
 public class LocationNE extends NamedEntity {
-
     private String latitud;
     private String longitud;
 

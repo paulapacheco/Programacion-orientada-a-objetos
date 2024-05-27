@@ -1,5 +1,7 @@
 package namedEntities.entitiesManager;
 
+import utils.Category;
+import utils.SetTopic;
 import java.util.List;
 
 public abstract class NamedEntity {
@@ -10,10 +12,7 @@ public abstract class NamedEntity {
     public NamedEntity(String label, String category, List<String> listTopics) {
         this.label = label;
         this.category = new Category(category);
-        this.topics = new SetTopic();
-        for (String topic : listTopics) {
-            this.topics.addTopic(new Topic(topic));
-        }
+        this.topics = SetTopic.topicSetFromList(listTopics);
     }
 
     public String getLabel() {

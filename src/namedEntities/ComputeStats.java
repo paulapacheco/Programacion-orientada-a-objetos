@@ -123,15 +123,15 @@ class EntityStats {
         this.count = count;
     }
 
-    public String getStatLabel() {
+    String getStatLabel() {
         return this.statLabel;
     }
 
-    public int getCont() {
+    int getCont() {
         return this.count;
     }
 
-    public void aumentarUno() {
+    void aumentarUno() {
         this.count++;
     }
 }

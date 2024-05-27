@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CapitalizedWordPoint {
-    static public List<String> extractCandidates(String text) {
+    public static List<String> extractCandidates(String text) {
         List<String> candidates = new ArrayList<>();
 
         text = text.replaceAll("[-+,^:\"]", "");

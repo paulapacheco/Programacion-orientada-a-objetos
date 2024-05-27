@@ -22,5 +22,4 @@ public class Option {
     public Integer getnumValues() {
         return numValues;
     }
-
 }

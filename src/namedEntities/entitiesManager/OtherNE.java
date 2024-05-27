@@ -3,7 +3,6 @@ package namedEntities.entitiesManager;
 import java.util.List;
 
 public class OtherNE extends NamedEntity {
-
     private String suggestedCategory;
 
     public OtherNE(String label, String category, List<String> topics) {

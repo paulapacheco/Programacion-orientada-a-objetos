@@ -1,25 +1,11 @@
-package namedEntities.entitiesManager;
+package utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-class Topic {
-    private final String topic;
-
-    // Constructor
-    public Topic (String topic) {
-        this.topic = topic;
-    }
-
-    // Returns the topic
-    public String getTopicString() {
-        return this.topic;
-    }
-}
-
-class SetTopic {
+public class SetTopic {
     private Set<Topic> topics;
 
     // Constructor
@@ -30,6 +16,15 @@ class SetTopic {
     // Add a topic to the set
     public void addTopic(Topic topic) {
         this.topics.add(topic);
+    }
+
+    // Create a SetTopic object from a list of topics (strings)
+    public static SetTopic topicSetFromList(List<String> listTopics) {
+        SetTopic topicSet = new SetTopic();
+        for (String topic : listTopics) {
+            topicSet.addTopic(new Topic(topic));
+        }
+        return topicSet;
     }
 
     // Returns the list of topics

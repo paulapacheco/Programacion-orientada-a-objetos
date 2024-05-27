@@ -1,6 +1,6 @@
-package namedEntities.entitiesManager;
+package utils;
 
-class Category {
+public class Category {
     private final String category;
 
     public Category (String category) {

@@ -3,7 +3,6 @@ package namedEntities.entitiesManager;
 import java.util.List;
 
 public class OrganizationNE extends NamedEntity {
-
     private String tipoSocietario;
     private String capital;
 
